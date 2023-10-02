@@ -1,13 +1,9 @@
 # Northcoders News API
 
-/\*
-In order to run this file locally, create the following 2 files: .env.test AND .env.development, with a single line of code that references the appropriate database.
+In the root directory, create the following 2 files:
 
-eg.
+.env.development (dev environment)
+.env.test (test environment)
 
-.env.development: PGDATABASE=nc_news
-.env.test: PGDATABASE=nc_news_test
-
-PLEASE NOTE:
-
-To access the "development" database, you simply omit "\_test" from the database name; you DO NOT include "\_development".
+Type "PGDATABASE=nc_news" into the dev enviorment file, and
+Type "PGDATABASE=nc_news_test" into the test environment file.

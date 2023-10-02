@@ -8,7 +8,7 @@ beforeEach(() => seed(index));
 afterAll(() => db.end());
 
 describe("/api/topics", () => {
-  xtest("GET: 200 sends an array of topic objects to the client.", () => {
+  test("GET: 200 sends an array of topic objects to the client.", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
@@ -20,7 +20,15 @@ describe("/api/topics", () => {
         });
       });
   });
+});
+
+describe("Generic handler", () => {
   test("GET: 404 sends an appropriate status and error message.", () => {
-    return request(app).get("/api/top").expect(404);
+    return request(app)
+      .get("/api/top")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Path not found.");
+      });
   });
 });
