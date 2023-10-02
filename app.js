@@ -7,8 +7,8 @@ app.get("/api/topics", getAllTopics);
 
 // Generic errors
 app.use((err, req, res, next) => {
-  if (err.status) {
-    res.status(err.status).send({ msg: err.msg });
+  if (err) {
+    res.status(404).send({ msg: "Path not found." });
   }
 });
 

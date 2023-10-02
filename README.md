@@ -7,3 +7,7 @@ eg.
 
 .env.development: PGDATABASE=nc_news
 .env.test: PGDATABASE=nc_news_test
+
+PLEASE NOTE:
+
+To access the "development" database, you simply omit "\_test" from the database name; you DO NOT include "\_development".
