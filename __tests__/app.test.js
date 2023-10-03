@@ -68,7 +68,6 @@ describe("/api/articles/:article_id", () => {
       .get("/api/articles/2")
       .then(({ body }) => {
         const article = body.article;
-        console.log(article);
         expect(article).toHaveProperty("author");
         expect(article).toHaveProperty("title");
         expect(article).toHaveProperty("article_id");
