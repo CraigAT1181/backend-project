@@ -7,6 +7,7 @@ const {
 const {
   handle500errors,
   handleCustomErrors,
+  handlePSQLErrors,
 } = require("./controllers/errors.controller");
 
 const app = express();
@@ -18,6 +19,7 @@ app.get("/api", getAllEndpoints);
 app.get("/api/articles/:article_id", getArticleById);
 
 // Error-handling Middleware
+app.use(handlePSQLErrors);
 app.use(handleCustomErrors);
 app.use(handle500errors);
 
