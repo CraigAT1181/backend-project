@@ -3,7 +3,6 @@ const request = require("supertest");
 const seed = require("../db/seeds/seed.js");
 const db = require("../db/connection.js");
 const index = require("../db/data/test-data");
-// const fetchAllEndpoints = require("../models/topics.models.js");
 const endpoints = require("../endpoints.json");
 
 beforeEach(() => seed(index));
@@ -50,6 +49,43 @@ describe("/api", () => {
       .expect(200)
       .then((response) => {
         expect(response.body.endpoints).toEqual(endpoints);
+      });
+  });
+});
+
+describe("/api/articles/:article_id", () => {
+  test("GET: 200 sends an article matching the article_id.", () => {
+    return request(app)
+      .get("/api/articles/2")
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+        expect(article.article_id).toBe(2);
+      });
+  });
+  test("Article should be of the correct format.", () => {
+    return request(app)
+      .get("/api/articles/2")
+      .then(({ body }) => {
+        const article = body.article;
+        console.log(article);
+        expect(article).toHaveProperty("author");
+        expect(article).toHaveProperty("title");
+        expect(article).toHaveProperty("article_id");
+        expect(article).toHaveProperty("body");
+        expect(article).toHaveProperty("topic");
+        expect(article).toHaveProperty("created_at");
+        expect(article).toHaveProperty("votes");
+        expect(article).toHaveProperty("article_img_url");
+      });
+  });
+
+  test("GET 404 Article Not Found", () => {
+    return request(app)
+      .get("/api/articles/100")
+      .expect(404)
+      .then(({ text }) => {
+        expect(text).toBe("Article does not exist.");
       });
   });
 });
