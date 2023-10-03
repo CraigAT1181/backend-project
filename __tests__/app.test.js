@@ -3,6 +3,8 @@ const request = require("supertest");
 const seed = require("../db/seeds/seed.js");
 const db = require("../db/connection.js");
 const index = require("../db/data/test-data");
+// const fetchAllEndpoints = require("../models/topics.models.js");
+const endpoints = require("../endpoints.json");
 
 beforeEach(() => seed(index));
 afterAll(() => db.end());
@@ -29,6 +31,25 @@ describe("Generic handler", () => {
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe("Path not found.");
+      });
+  });
+});
+
+describe("/api", () => {
+  test("GET: 200 sends an object with all available endpoints.", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((response) => {
+        expect(typeof response.body).toBe("object");
+      });
+  });
+  test("Should check that all available APIs are included.", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.endpoints).toEqual(endpoints);
       });
   });
 });
