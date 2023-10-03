@@ -3,6 +3,7 @@ const {
   getAllTopics,
   getAllEndpoints,
   getArticleById,
+  getArticles,
 } = require("./controllers/topics.controllers");
 const {
   handle500errors,
@@ -17,6 +18,8 @@ app.get("/api/topics", getAllTopics);
 app.get("/api", getAllEndpoints);
 
 app.get("/api/articles/:article_id", getArticleById);
+
+app.get("/api/articles", getArticles);
 
 // Error-handling Middleware
 app.use(handlePSQLErrors);
