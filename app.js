@@ -10,6 +10,9 @@ const {
   handlePSQLErrors,
 } = require("./controllers/errors.controller");
 const { getAllEndpoints } = require("./controllers/api.controllers");
+const {
+  getCommentsByArticleId,
+} = require("./controllers/comments.controllers");
 
 const app = express();
 
@@ -20,6 +23,8 @@ app.get("/api", getAllEndpoints);
 app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/api/articles", getArticles);
+
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 // Error-handling Middleware
 app.use(handlePSQLErrors);

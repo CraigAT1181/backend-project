@@ -1,5 +1,4 @@
 const db = require("../db/connection.js");
-const { readFile } = require("fs/promises");
 
 exports.fetchArticleById = (article_id) => {
   return db

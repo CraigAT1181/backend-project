@@ -159,6 +159,75 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
+describe("/api/articles/:article_id/comments", () => {
+  test("GET: 200 sends array of all comments by article_id.", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const comments = body.comments;
+
+        expect(comments.length).toBe(11);
+        comments.forEach((comment) => {
+          expect(comment.article_id).toBe(1);
+        });
+      });
+  });
+  test("Should return comments in correct format.", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const comments = body.comments;
+
+        comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id");
+          expect(comment).toHaveProperty("votes");
+          expect(comment).toHaveProperty("created_at");
+          expect(comment).toHaveProperty("author");
+          expect(comment).toHaveProperty("body");
+          expect(comment).toHaveProperty("article_id");
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.created_at).toBe("string");
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.article_id).toBe("number");
+        });
+      });
+  });
+  test("Should return sorted comments in desc order by date.", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const comments = body.comments;
+
+        const latest = comments[0].created_at;
+        const earliest = comments[10].created_at;
+
+        expect(latest > earliest).toBe(true);
+      });
+  });
+  test("GET 404 Article Not Found", () => {
+    return request(app)
+      .get("/api/articles/100/comments")
+      .expect(404)
+      .then(({ text }) => {
+        expect(text).toBe("Article does not exist.");
+      });
+  });
+
+  test("GET 400 Bad Request", () => {
+    return request(app)
+      .get("/api/articles/not-a-number/comments")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Bad Request.");
+      });
+  });
+});
+
 describe("Generic handler", () => {
   test("GET: 404 sends an appropriate status and error message.", () => {
     return request(app)
