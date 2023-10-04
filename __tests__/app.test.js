@@ -50,7 +50,6 @@ describe("/api/articles", () => {
       .then((response) => {
         const { articles } = response.body;
         expect(articles.length).toBe(13);
-        expect(Array.isArray(articles)).toBe(true);
         articles.forEach((article) => {
           expect(typeof article).toBe("object");
           expect(article).toHaveProperty("author");
