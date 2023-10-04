@@ -1,15 +1,15 @@
 const express = require("express");
 const {
-  getAllTopics,
-  getAllEndpoints,
   getArticleById,
   getArticles,
-} = require("./controllers/topics.controllers");
+} = require("./controllers/articles.controllers");
+const { getAllTopics } = require("./controllers/topics.controllers");
 const {
   handle500errors,
   handleCustomErrors,
   handlePSQLErrors,
 } = require("./controllers/errors.controller");
+const { getAllEndpoints } = require("./controllers/api.controllers");
 
 const app = express();
 
