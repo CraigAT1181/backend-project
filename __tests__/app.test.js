@@ -209,6 +209,7 @@ describe("/api/articles/:article_id/comments", () => {
         expect(latest > earliest).toBe(true);
       });
   });
+  
   test("GET 404 Article Not Found", () => {
     return request(app)
       .get("/api/articles/100/comments")
