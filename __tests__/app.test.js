@@ -4,6 +4,7 @@ const seed = require("../db/seeds/seed.js");
 const db = require("../db/connection.js");
 const index = require("../db/data/test-data");
 const endpoints = require("../endpoints.json");
+const jestSort = require("jest-sorted");
 
 beforeEach(() => seed(index));
 afterAll(() => db.end());
