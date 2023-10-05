@@ -11,7 +11,10 @@ exports.fetchArticleById = (article_id) => {
     .then((result) => {
       const article = result.rows[0];
       if (!article) {
-        return Promise.reject({ status: 404, msg: "Article does not exist." });
+        return Promise.reject({
+          status: 404,
+          message: "Article does not exist.",
+        });
       } else {
         return article;
       }
