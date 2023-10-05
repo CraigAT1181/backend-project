@@ -14,6 +14,7 @@ const { getAllEndpoints } = require("./controllers/api.controllers");
 const {
   getCommentsByArticleId,
   addCommentByArticleId,
+  deleteComment,
 } = require("./controllers/comments.controllers");
 
 const app = express();
@@ -33,6 +34,8 @@ app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", addCommentByArticleId);
 
 app.patch("/api/articles/:article_id", patchArticle);
+
+app.delete("/api/comments/:comment_id", deleteComment);
 
 // Error-handling Middleware
 app.use(handlePSQLErrors);

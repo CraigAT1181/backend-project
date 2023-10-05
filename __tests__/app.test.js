@@ -312,3 +312,25 @@ describe("Generic handler", () => {
       });
   });
 });
+
+describe("/api/comments/:comment_id", () => {
+  test("DELETE: 200 sends an article matching the article_id.", () => {
+    return request(app).delete("/api/comments/2").expect(204);
+  });
+  test("DELETE:404 Error and message when given a non-existent id", () => {
+    return request(app)
+      .delete("/api/comments/100")
+      .expect(404)
+      .then((response) => {
+        expect(response.text).toBe("Comment doesn't exist.");
+      });
+  });
+  test("DELETE:400 Error and message when given an invalid id", () => {
+    return request(app)
+      .delete("/api/comments/not-an-id")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Bad Request.");
+      });
+  });
+});
