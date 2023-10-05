@@ -8,7 +8,7 @@ exports.handlePSQLErrors = (err, req, res, next) => {
   }
 
   if (err.code === "23502") {
-    res.status(400).send({ message: "Missing essential comment property." });
+    res.status(400).send({ message: "Incorrect data input." });
   }
   next(err);
 };

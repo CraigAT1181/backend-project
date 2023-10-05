@@ -99,47 +99,86 @@ describe("/api/articles", () => {
 });
 
 describe("/api/articles/:article_id", () => {
-  test("GET: 200 sends an article matching the article_id.", () => {
-    return request(app)
-      .get("/api/articles/2")
-      .expect(200)
-      .then(({ body }) => {
-        const article = body.article;
-        expect(article.article_id).toBe(2);
-      });
-  });
-  test("Article should be of the correct format.", () => {
-    return request(app)
-      .get("/api/articles/2")
-      .then(({ body }) => {
-        const article = body.article;
-        expect(typeof article.author).toBe("string");
-        expect(typeof article.title).toBe("string");
-        expect(typeof article.article_id).toBe("number");
-        expect(typeof article.body).toBe("string");
-        expect(typeof article.topic).toBe("string");
-        expect(typeof article.created_at).toBe("string");
-        expect(typeof article.votes).toBe("number");
-        expect(typeof article.article_img_url).toBe("string");
-      });
+  describe("GET", () => {
+    test("GET: 200 sends an article matching the article_id.", () => {
+      return request(app)
+        .get("/api/articles/2")
+        .expect(200)
+        .then(({ body }) => {
+          const article = body.article;
+          expect(article.article_id).toBe(2);
+        });
+    });
+    test("Article should be of the correct format.", () => {
+      return request(app)
+        .get("/api/articles/2")
+        .then(({ body }) => {
+          const article = body.article;
+          expect(typeof article.author).toBe("string");
+          expect(typeof article.title).toBe("string");
+          expect(typeof article.article_id).toBe("number");
+          expect(typeof article.body).toBe("string");
+          expect(typeof article.topic).toBe("string");
+          expect(typeof article.created_at).toBe("string");
+          expect(typeof article.votes).toBe("number");
+          expect(typeof article.article_img_url).toBe("string");
+        });
+    });
+
+    test("GET 404 Article Not Found", () => {
+      return request(app)
+        .get("/api/articles/100")
+        .expect(404)
+        .then((response) => {
+          expect(response.text).toBe("Article does not exist.");
+        });
+    });
+
+    test("GET 400 Bad Request", () => {
+      return request(app)
+        .get("/api/articles/not-a-number")
+        .expect(400)
+        .then((response) => {
+          expect(response.body.message).toBe("Bad Request.");
+        });
+    });
   });
 
-  test("GET 404 Article Not Found", () => {
-    return request(app)
-      .get("/api/articles/100")
-      .expect(404)
-      .then((response) => {
-        expect(response.text).toBe("Article does not exist.");
-      });
-  });
+  describe("PATCH", () => {
+    test("200: Should update an article by article_id.", () => {
+      const articleUpdate = { inc_votes: -100 };
+      const newArticle = {
+        article_id: 3,
+        title: "Eight pug gifs that remind me of mitch",
+        topic: "mitch",
+        author: "icellusedkars",
+        body: "some gifs",
+        created_at: "2020-11-03T09:12:00.000Z",
+        votes: -100,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      };
 
-  test("GET 400 Bad Request", () => {
-    return request(app)
-      .get("/api/articles/not-a-number")
-      .expect(400)
-      .then((response) => {
-        expect(response.body.message).toBe("Bad Request.");
-      });
+      return request(app)
+        .patch("/api/articles/3")
+        .send(articleUpdate)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toMatchObject(newArticle);
+        });
+    });
+
+    test("POST:400 Error: Invalid date-type input.", () => {
+      const invalidPost = { inc_votes: "text" };
+
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(invalidPost)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("Incorrect data input.");
+        });
+    });
   });
 });
 
@@ -240,9 +279,7 @@ describe("/api/articles/:article_id/comments", () => {
       .send(newComment)
       .expect(400)
       .then((response) => {
-        expect(response.body.message).toBe(
-          "Missing essential comment property."
-        );
+        expect(response.body.message).toBe("Incorrect data input.");
       });
   });
 
