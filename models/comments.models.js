@@ -37,7 +37,7 @@ exports.insertComment = (article_id, username, body) => {
       const comment = result.rows[0];
       if (comment.length === 0) {
         return Promise.reject({
-          status: 400,
+          status: 404,
           msg: "Username doesn't exist.",
         });
       } else {

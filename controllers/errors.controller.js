@@ -4,7 +4,7 @@ exports.handlePSQLErrors = (err, req, res, next) => {
   }
 
   if (err.code === "23503") {
-    res.status(400).send({ message: "Username doesn't exist." });
+    res.status(404).send({ message: "Username doesn't exist." });
   }
 
   if (err.code === "23502") {

@@ -4,7 +4,6 @@ const seed = require("../db/seeds/seed.js");
 const db = require("../db/connection.js");
 const index = require("../db/data/test-data");
 const endpoints = require("../endpoints.json");
-const jestSort = require("jest-sorted");
 
 beforeEach(() => seed(index));
 afterAll(() => db.end());
@@ -91,7 +90,7 @@ describe("/api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles).toBeSortedBy('created_at', {
+        expect(articles).toBeSortedBy("created_at", {
           descending: true,
           coerce: true,
         });
@@ -183,9 +182,8 @@ describe("/api/articles/:article_id/comments", () => {
       .expect(200)
       .then(({ body }) => {
         const comments = body.comments;
-        
 
-        expect(comments).toBeSortedBy('created_at', {
+        expect(comments).toBeSortedBy("created_at", {
           descending: true,
           coerce: true,
         });
@@ -217,7 +215,7 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 
-  test("POST:400 Error: Provided with an unknown user.", () => {
+  test("POST:404 Error: Provided with an unknown user.", () => {
     const newComment = {
       username: "unknown_user",
       body: "Interesting text",
@@ -226,7 +224,7 @@ describe("/api/articles/:article_id/comments", () => {
     return request(app)
       .post("/api/articles/3/comments")
       .send(newComment)
-      .expect(400)
+      .expect(404)
       .then((response) => {
         expect(response.body.message).toBe("Username doesn't exist.");
       });
