@@ -52,14 +52,6 @@ describe("/api/articles", () => {
         expect(articles.length).toBe(13);
         articles.forEach((article) => {
           expect(typeof article).toBe("object");
-          expect(article).toHaveProperty("author");
-          expect(article).toHaveProperty("title");
-          expect(article).toHaveProperty("article_id");
-          expect(article).toHaveProperty("topic");
-          expect(article).toHaveProperty("created_at");
-          expect(article).toHaveProperty("votes");
-          expect(article).toHaveProperty("article_img_url");
-          expect(article).toHaveProperty("comment_count");
           expect(typeof article.author).toBe("string");
           expect(typeof article.title).toBe("string");
           expect(typeof article.article_id).toBe("number");
@@ -96,12 +88,12 @@ describe("/api/articles", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
-      .then((response) => {
-        const { articles } = response.body;
-        const latest = articles[0].created_at;
-        const earliest = articles[12].created_at;
-
-        expect(latest > earliest).toBe(true);
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeSortedBy('created_at', {
+          descending: true,
+          coerce: true,
+        });
       });
   });
 });
@@ -121,14 +113,6 @@ describe("/api/articles/:article_id", () => {
       .get("/api/articles/2")
       .then(({ body }) => {
         const article = body.article;
-        expect(article).toHaveProperty("author");
-        expect(article).toHaveProperty("title");
-        expect(article).toHaveProperty("article_id");
-        expect(article).toHaveProperty("body");
-        expect(article).toHaveProperty("topic");
-        expect(article).toHaveProperty("created_at");
-        expect(article).toHaveProperty("votes");
-        expect(article).toHaveProperty("article_img_url");
         expect(typeof article.author).toBe("string");
         expect(typeof article.title).toBe("string");
         expect(typeof article.article_id).toBe("number");
@@ -144,8 +128,8 @@ describe("/api/articles/:article_id", () => {
     return request(app)
       .get("/api/articles/100")
       .expect(404)
-      .then(({ text }) => {
-        expect(text).toBe("Article does not exist.");
+      .then((response) => {
+        expect(response.text).toBe("Article does not exist.");
       });
   });
 
@@ -173,6 +157,7 @@ describe("/api/articles/:article_id/comments", () => {
         });
       });
   });
+
   test("Should return comments in correct format.", () => {
     return request(app)
       .get("/api/articles/1/comments")
@@ -181,12 +166,6 @@ describe("/api/articles/:article_id/comments", () => {
         const comments = body.comments;
 
         comments.forEach((comment) => {
-          expect(comment).toHaveProperty("comment_id");
-          expect(comment).toHaveProperty("votes");
-          expect(comment).toHaveProperty("created_at");
-          expect(comment).toHaveProperty("author");
-          expect(comment).toHaveProperty("body");
-          expect(comment).toHaveProperty("article_id");
           expect(typeof comment.comment_id).toBe("number");
           expect(typeof comment.votes).toBe("number");
           expect(typeof comment.created_at).toBe("string");
@@ -196,26 +175,84 @@ describe("/api/articles/:article_id/comments", () => {
         });
       });
   });
+
   test("Should return sorted comments in desc order by date.", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
       .then(({ body }) => {
         const comments = body.comments;
+        
 
-        const latest = comments[0].created_at;
-        const earliest = comments[10].created_at;
-
-        expect(latest > earliest).toBe(true);
+        expect(comments).toBeSortedBy('created_at', {
+          descending: true,
+          coerce: true,
+        });
       });
   });
-  
+
+  test("POST: 201 adds a new comment by article_id, and returns the comment.", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "Interesting text",
+    };
+
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        const comment = body.comment;
+
+        expect(typeof comment).toBe("object");
+        expect(comment.body).toEqual("Interesting text");
+        expect(comment.author).toEqual("butter_bridge");
+        expect(comment.article_id).toBe(3);
+        expect(typeof comment.comment_id).toBe("number");
+        expect(typeof comment.body).toBe("string");
+        expect(typeof comment.author).toBe("string");
+        expect(typeof comment.votes).toBe("number");
+        expect(typeof comment.created_at).toBe("string");
+      });
+  });
+
+  test("POST:400 Error: Provided with an unknown user.", () => {
+    const newComment = {
+      username: "unknown_user",
+      body: "Interesting text",
+    };
+
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send(newComment)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe("Username doesn't exist.");
+      });
+  });
+
+  test("POST:400 Error: Missing essential comment property.", () => {
+    const newComment = {
+      body: "Interesting text",
+    };
+
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send(newComment)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.message).toBe(
+          "Missing essential comment property."
+        );
+      });
+  });
+
   test("GET 404 Article Not Found", () => {
     return request(app)
       .get("/api/articles/100/comments")
       .expect(404)
-      .then(({ text }) => {
-        expect(text).toBe("Article does not exist.");
+      .then((response) => {
+        expect(response.text).toBe("Article does not exist.");
       });
   });
 

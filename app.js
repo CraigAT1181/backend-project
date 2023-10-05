@@ -12,9 +12,12 @@ const {
 const { getAllEndpoints } = require("./controllers/api.controllers");
 const {
   getCommentsByArticleId,
+  addCommentByArticleId,
 } = require("./controllers/comments.controllers");
 
 const app = express();
+
+app.use(express.json());
 
 app.get("/api/topics", getAllTopics);
 
@@ -25,6 +28,8 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
+
+app.post("/api/articles/:article_id/comments", addCommentByArticleId);
 
 // Error-handling Middleware
 app.use(handlePSQLErrors);
