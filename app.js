@@ -22,9 +22,11 @@ const app = express();
 
 app.use(express.json());
 
+app.get("/api", getAllEndpoints);
+
 app.get("/api/topics", getAllTopics);
 
-app.get("/api", getAllEndpoints);
+app.get("/api/users", getUsers);
 
 app.get("/api/articles/:article_id", getArticleById);
 
@@ -37,8 +39,6 @@ app.post("/api/articles/:article_id/comments", addCommentByArticleId);
 app.patch("/api/articles/:article_id", patchArticle);
 
 app.delete("/api/comments/:comment_id", deleteComment);
-
-app.get("/api/users", getUsers);
 
 // Error-handling Middleware
 app.use(handlePSQLErrors);

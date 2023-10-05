@@ -63,6 +63,13 @@ describe("/api/articles", () => {
         });
       });
   });
+
+  test("GET: 200 sends an article relevant to a query", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then((response) => {});
+  });
   test("Should return articles without a body, and with a commment_count.", () => {
     return request(app)
       .get("/api/articles")
