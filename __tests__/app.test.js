@@ -108,8 +108,6 @@ describe("/api/articles", () => {
       });
   });
 
-  // Add 200 for valid topic query returning no articles.
-
   test("GET: 404 returns a status and error if query finds no results.", () => {
     return request(app)
       .get("/api/articles?topic=paper")
