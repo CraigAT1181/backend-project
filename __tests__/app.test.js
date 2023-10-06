@@ -13,16 +13,16 @@ describe("/api", () => {
     return request(app)
       .get("/api")
       .expect(200)
-      .then((response) => {
-        expect(typeof response.body).toBe("object");
+      .then(({ body }) => {
+        expect(typeof body).toBe("object");
       });
   });
   test("Should check that all available APIs are included.", () => {
     return request(app)
       .get("/api")
       .expect(200)
-      .then((response) => {
-        expect(response.body.endpoints).toEqual(endpoints);
+      .then(({ body }) => {
+        expect(body.endpoints).toEqual(endpoints);
       });
   });
 });
