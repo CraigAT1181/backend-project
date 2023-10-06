@@ -4,13 +4,13 @@ const {
   getArticles,
   patchArticle,
 } = require("./controllers/articles.controllers");
-const { getAllTopics } = require("./controllers/topics.controllers");
+const { getTopics } = require("./controllers/topics.controllers");
 const {
   handle500errors,
   handleCustomErrors,
   handlePSQLErrors,
 } = require("./controllers/errors.controller");
-const { getAllEndpoints } = require("./controllers/api.controllers");
+const { getEndpoints } = require("./controllers/api.controllers");
 const {
   getCommentsByArticleId,
   addCommentByArticleId,
@@ -22,9 +22,9 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/api", getAllEndpoints);
+app.get("/api", getEndpoints);
 
-app.get("/api/topics", getAllTopics);
+app.get("/api/topics", getTopics);
 
 app.get("/api/users", getUsers);
 
@@ -47,7 +47,7 @@ app.use(handle500errors);
 
 // Generic errors
 app.all("/*", (req, res) => {
-  res.status(404).send({ msg: "Path not found." });
+  res.status(404).send({ message: "Please check your path is correct." });
 });
 
 module.exports = app;

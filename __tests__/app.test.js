@@ -17,7 +17,7 @@ describe("/api", () => {
         expect(typeof body).toBe("object");
       });
   });
-  test("Should check that all available APIs are included.", () => {
+  test("Should check that all available endpoints are included.", () => {
     return request(app)
       .get("/api")
       .expect(200)
@@ -32,11 +32,28 @@ describe("/api/topics", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.topics.length).toBe(3);
         body.topics.forEach((topic) => {
           expect(typeof topic.slug).toBe("string");
           expect(typeof topic.description).toBe("string");
+        });
+      });
+  });
+});
+
+describe("/api/users", () => {
+  test("GET: 200 sends an array of user objects to the client.", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const users = body.users;
+        expect(users.length).toBe(4);
+        users.forEach((user) => {
+          expect(typeof user.username).toBe("string");
+          expect(typeof user.name).toBe("string");
+          expect(typeof user.avatar_url).toBe("string");
         });
       });
   });
@@ -340,17 +357,6 @@ describe("/api/articles/:article_id/comments", () => {
   });
 });
 
-describe("Generic handler", () => {
-  test("GET: 404 sends an appropriate status and error message.", () => {
-    return request(app)
-      .get("/api/top")
-      .expect(404)
-      .then((response) => {
-        expect(response.body.msg).toBe("Path not found.");
-      });
-  });
-});
-
 describe("/api/comments/:comment_id", () => {
   test("DELETE: 200 sends an article matching the article_id.", () => {
     return request(app).delete("/api/comments/2").expect(204);
@@ -373,19 +379,13 @@ describe("/api/comments/:comment_id", () => {
   });
 });
 
-describe("/api/users", () => {
-  test("GET: 200 Should return an array of all users.", () => {
+describe("Generic handler", () => {
+  test("GET: 404 sends an appropriate status and error message.", () => {
     return request(app)
-      .get("/api/users")
-      .expect(200)
+      .get("/api/unknown-path")
+      .expect(404)
       .then(({ body }) => {
-        const usersArray = body.users;
-        expect(usersArray.length).toBe(4);
-        usersArray.forEach((user) => {
-          expect(typeof user.username).toBe("string");
-          expect(typeof user.name).toBe("string");
-          expect(typeof user.avatar_url).toBe("string");
-        });
+        expect(body.message).toBe("Please check your path is correct.");
       });
   });
 });
