@@ -2,23 +2,23 @@
 
 Thanks for checking out my project!
 
-#H Live Server
+## Live Server
 
 You'll find the hosted version at:
 https://northcoders-project.onrender.com
 
-#H Project
+## Project
 
 So far, this forms the back-end of the Northcoders News App. It comprises a fully-functioning server that interacts with a database featuring article, user, topic and comment tables.
 
-#H Tech Spec
+## Tech Spec
 
 Node.js - v20.5.1
 PostGres - v14.9
 Express.js
 Jest
 
-#H Running Locally
+## Running Locally
 
 - Clone
 
@@ -43,7 +43,7 @@ In the root directory:
 npm run setup-dbs
 npm run seed
 
-#H Testing
+## Testing
 
 To test, use the following command:
 
