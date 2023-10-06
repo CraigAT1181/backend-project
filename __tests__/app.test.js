@@ -112,7 +112,7 @@ describe("/api/articles", () => {
 
   test("GET: 404 returns a status and error if query finds no results.", () => {
     return request(app)
-      .get("/api/articles?topic=snakes")
+      .get("/api/articles?topic=paper")
       .expect(404)
       .then(({ text }) => {
         expect(text).toBe("Topic not found.");
