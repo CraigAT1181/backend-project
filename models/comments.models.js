@@ -58,7 +58,10 @@ exports.removeComment = (comment_id) => {
 
     .then((result) => {
       if (result.rowCount === 0) {
-        return Promise.reject({ status: 404, message: "Comment doesn't exist." });
+        return Promise.reject({
+          status: 404,
+          message: "Couldn't find a comment with that ID.",
+        });
       }
     });
 };

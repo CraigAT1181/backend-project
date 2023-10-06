@@ -194,7 +194,9 @@ describe("/api/articles/:article_id", () => {
         .get("/api/articles/not-a-number")
         .expect(400)
         .then((response) => {
-          expect(response.body.message).toBe("Bad Request.");
+          expect(response.body.message).toBe(
+            "Please check your query and try again."
+          );
         });
     });
   });
@@ -352,29 +354,31 @@ describe("/api/articles/:article_id/comments", () => {
       .get("/api/articles/not-a-number/comments")
       .expect(400)
       .then((response) => {
-        expect(response.body.message).toBe("Bad Request.");
+        expect(response.body.message).toBe(
+          "Please check your query and try again."
+        );
       });
   });
 });
 
 describe("/api/comments/:comment_id", () => {
-  test("DELETE: 200 sends an article matching the article_id.", () => {
+  test("DELETE: 204 deletes a comment by comment_id.", () => {
     return request(app).delete("/api/comments/2").expect(204);
   });
-  test("DELETE:404 Error and message when given a non-existent id", () => {
+  test("DELETE: 404 Error and message returned when given a non-existent id.", () => {
     return request(app)
       .delete("/api/comments/100")
       .expect(404)
-      .then((response) => {
-        expect(response.text).toBe("Comment doesn't exist.");
+      .then(({ text }) => {
+        expect(text).toBe("Couldn't find a comment with that ID.");
       });
   });
-  test("DELETE:400 Error and message when given an invalid id", () => {
+  test("DELETE: 400 Error and message returned when given an invalid id.", () => {
     return request(app)
       .delete("/api/comments/not-an-id")
       .expect(400)
-      .then((response) => {
-        expect(response.body.message).toBe("Bad Request.");
+      .then(({ body }) => {
+        expect(body.message).toBe("Please check your query and try again.");
       });
   });
 });
