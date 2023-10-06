@@ -13,22 +13,22 @@ So far, this forms the back-end of the Northcoders News App. It comprises a full
 
 ## Tech Spec
 
-Node.js - v20.5.1
-PostGres - v14.9
-Express.js
-Jest
+- Node.js - v20.5.1
+- PostGres - v14.9
+- Express.js
+- Jest
 
 ## Running Locally
 
-- Clone
+### Clone
 
-git clone https://github.com/CraigAT1181/backend-project
+git clone https://northcoders-project.onrender.com/api
 
-- Run
+### Run
 
-npm install
+`npm install`
 
-- Environment Setup
+### Environment Setup
 
 In the root directory:
 
@@ -38,13 +38,13 @@ In the root directory:
 - Create .env.test (test environment)
   and add: PGDATABASE=nc_news
 
-* Run Commands
+### Run Commands
 
-npm run setup-dbs
-npm run seed
+`npm run setup-dbs`
+`npm run seed`
 
 ## Testing
 
 To test, use the following command:
 
-npm run test
+`npm run test`
