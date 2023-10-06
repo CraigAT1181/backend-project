@@ -21,23 +21,41 @@ exports.fetchArticleById = (article_id) => {
     });
 };
 
-exports.fetchArticles = () => {
-  return db
-    .query(
-      `
-      SELECT
-  articles.author, articles.title, articles.article_id, articles.topic, articles.created_at,
-  articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count
-  FROM articles
-  LEFT JOIN comments ON articles.article_id = comments.article_id
-  GROUP BY articles.article_id
-  ORDER BY articles.created_at DESC;
-      `
-    )
-    .then((result) => {
-      const articles = result.rows;
-      return articles;
-    });
+exports.fetchArticles = (queryKey, queryValue) => {
+  if (queryKey && queryValue) {
+    console.log(queryKey, queryValue, "PASSED  IN");
+    return db
+      .query(
+        `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at,
+articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count
+FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id 
+WHERE $1 = $2 
+GROUP BY articles.article_id 
+ORDER BY articles.created_at DESC
+;`,
+        [queryKey, queryValue]
+      )
+      .then((result) => {
+        const articles = result.rows;
+        console.log(articles, "Model Query");
+        return articles;
+      });
+  } else if (!(queryKey && queryValue)) {
+    return db
+      .query(
+        `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at,
+    articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count
+    FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id 
+    GROUP BY articles.article_id 
+    ORDER BY articles.created_at DESC
+    ;`
+      )
+      .then((result) => {
+        const articles = result.rows;
+        console.log(articles, "Model NO query");
+        return articles;
+      });
+  }
 };
 
 exports.updateArticle = (article_id, inc_votes) => {

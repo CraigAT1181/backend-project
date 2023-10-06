@@ -5,13 +5,15 @@ const {
 } = require("../models/articles.models");
 
 exports.getArticles = (req, res, next) => {
-  const query = req.query;
+  const queryKey = Object.keys(req.query);
+  const queryValue = Object.values(req.query);
 
-  fetchArticles()
+  fetchArticles(queryKey, queryValue)
     .then((articles) => {
       res.status(200).send({ articles });
     })
     .catch((err) => {
+      console.log(err, "controller")
       next(err);
     });
 };
