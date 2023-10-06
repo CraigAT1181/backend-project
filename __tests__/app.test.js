@@ -107,6 +107,9 @@ describe("/api/articles", () => {
         expect(body.articles[0].topic).toBe("cats");
       });
   });
+
+  // Add 200 for valid topic query returning no articles.
+
   test("GET: 404 returns a status and error if query finds no results.", () => {
     return request(app)
       .get("/api/articles?topic=snakes")
@@ -121,16 +124,16 @@ describe("/api/articles/:article_id", () => {
   describe("GET", () => {
     test("GET: 200 sends an article matching the article_id.", () => {
       return request(app)
-        .get("/api/articles/2")
+        .get("/api/articles/3")
         .expect(200)
         .then(({ body }) => {
           const article = body.article;
-          expect(article.article_id).toBe(2);
+          expect(article.article_id).toBe(3);
         });
     });
     test("Article should be of the correct format.", () => {
       return request(app)
-        .get("/api/articles/2")
+        .get("/api/articles/3")
         .then(({ body }) => {
           const article = body.article;
           expect(typeof article.author).toBe("string");
@@ -141,6 +144,24 @@ describe("/api/articles/:article_id", () => {
           expect(typeof article.created_at).toBe("string");
           expect(typeof article.votes).toBe("number");
           expect(typeof article.article_img_url).toBe("string");
+        });
+    });
+
+    test("GET: 200 Should return an article, by article_id, displaying a comment_count.", () => {
+      return request(app)
+        .get("/api/articles/3")
+        .expect(200)
+        .then(({ body }) => {
+          const article = body.article;
+          expect(typeof article.author).toBe("string");
+          expect(typeof article.title).toBe("string");
+          expect(typeof article.article_id).toBe("number");
+          expect(typeof article.body).toBe("string");
+          expect(typeof article.topic).toBe("string");
+          expect(typeof article.created_at).toBe("string");
+          expect(typeof article.votes).toBe("number");
+          expect(typeof article.article_img_url).toBe("string");
+          expect(typeof article.comment_count).toBe("number");
         });
     });
 
