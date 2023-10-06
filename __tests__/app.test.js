@@ -32,9 +32,9 @@ describe("/api/topics", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
-      .then((response) => {
-        expect(response.body.topics.length).toBe(3);
-        response.body.topics.forEach((topic) => {
+      .then(({body}) => {
+        expect(body.topics.length).toBe(3);
+        body.topics.forEach((topic) => {
           expect(typeof topic.slug).toBe("string");
           expect(typeof topic.description).toBe("string");
         });
