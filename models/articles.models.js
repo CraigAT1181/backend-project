@@ -21,40 +21,41 @@ exports.fetchArticleById = (article_id) => {
     });
 };
 
-exports.fetchArticles = (queryKey, queryValue) => {
-  if (queryKey && queryValue) {
-    console.log(queryKey, queryValue, "PASSED  IN");
-    return db
-      .query(
-        `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at,
+exports.fetchArticles = (query) => {
+  const queryStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at,
 articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count
-FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id 
-WHERE $1 = $2 
-GROUP BY articles.article_id 
-ORDER BY articles.created_at DESC
-;`,
-        [queryKey, queryValue]
-      )
-      .then((result) => {
-        const articles = result.rows;
-        console.log(articles, "Model Query");
-        return articles;
-      });
-  } else if (!(queryKey && queryValue)) {
-    return db
-      .query(
-        `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at,
-    articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count
-    FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id 
+FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id
+`;
+
+  if (query.hasOwnProperty("topic")) {
+    const finalQueryStr =
+      queryStr +
+      `
+      WHERE topic = $1 
     GROUP BY articles.article_id 
-    ORDER BY articles.created_at DESC
-    ;`
-      )
-      .then((result) => {
-        const articles = result.rows;
-        console.log(articles, "Model NO query");
+    ORDER BY articles.created_at DESC;
+    `;
+
+    return db.query(finalQueryStr, [query.topic]).then((result) => {
+      const articles = result.rows;
+
+      if (articles.length > 0) {
         return articles;
-      });
+      } else {
+        return Promise.reject({ status: 404, message: "Topic not found." });
+      }
+    });
+  } else {
+    const finalQueryStr =
+      queryStr +
+      `
+    GROUP BY articles.article_id 
+    ORDER BY articles.created_at DESC;`;
+
+    return db.query(finalQueryStr).then((result) => {
+      const articles = result.rows;
+      return articles;
+    });
   }
 };
 

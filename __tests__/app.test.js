@@ -98,12 +98,21 @@ describe("/api/articles", () => {
       });
   });
 
-  test.only("GET: 200 sends an article relevant to a query", () => {
+  test("GET: 200 sends an article relevant to a query", () => {
     return request(app)
       .get("/api/articles?topic=cats")
       .expect(200)
-      .then((response) => {
-        console.log(response.body, "TEST!")
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(1);
+        expect(body.articles[0].topic).toBe("cats");
+      });
+  });
+  test("GET: 404 returns a status and error if query finds no results.", () => {
+    return request(app)
+      .get("/api/articles?topic=snakes")
+      .expect(404)
+      .then(({ text }) => {
+        expect(text).toBe("Topic not found.");
       });
   });
 });
