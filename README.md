@@ -5,7 +5,7 @@ Thanks for checking out my project!
 ## Live Server
 
 You'll find the hosted version at:
-https://northcoders-project.onrender.com
+https://northcoders-project.onrender.com/api
 
 ## Project
 
@@ -22,7 +22,7 @@ So far, this forms the back-end of the Northcoders News App. It comprises a full
 
 ### Clone
 
-git clone https://northcoders-project.onrender.com/api
+git clone https://github.com/CraigAT1181/backend-project.git
 
 ### Run
 
