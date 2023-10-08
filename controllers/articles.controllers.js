@@ -2,10 +2,20 @@ const {
   fetchArticleById,
   fetchArticles,
   updateArticle,
+  checkTopic,
 } = require("../models/articles.models");
 
 exports.getArticles = (req, res, next) => {
   const query = req.query;
+  const topic = req.query.topic;
+
+  if (topic !== undefined) {
+    checkTopic(topic)
+      .then(() => {})
+      .catch((err) => {
+        next(err);
+      });
+  }
 
   fetchArticles(query)
     .then((articles) => {

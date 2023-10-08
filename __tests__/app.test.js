@@ -60,13 +60,26 @@ describe("/api/users", () => {
 });
 
 describe("/api/articles", () => {
-  test("GET: 200 sends all articles in the correct format.", () => {
+  test("GET: 200 sends an array of article objects to the client, adhering to the correct format.", () => {
+    const example = {
+      author: "icellusedkars",
+      title: "Eight pug gifs that remind me of mitch",
+      article_id: 3,
+      topic: "mitch",
+      created_at: "2020-11-03T09:12:00.000Z",
+      votes: 0,
+      article_img_url:
+        "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      comment_count: 2,
+    };
+
     return request(app)
       .get("/api/articles")
       .expect(200)
       .then((response) => {
         const { articles } = response.body;
         expect(articles.length).toBe(13);
+        expect(articles[0]).toMatchObject(example);
         articles.forEach((article) => {
           expect(typeof article).toBe("object");
           expect(typeof article.author).toBe("string");
@@ -93,7 +106,7 @@ describe("/api/articles", () => {
         });
       });
   });
-  test("Should return articles with correct comment_count.", () => {
+  test("Should return articles with a correct comment_count.", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -102,7 +115,7 @@ describe("/api/articles", () => {
         expect(articles[0].comment_count).toBe(2);
       });
   });
-  test("Should return sorted articles in desc order by date.", () => {
+  test("Should return articles sorted by created_at, in desc order.", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -114,24 +127,37 @@ describe("/api/articles", () => {
         });
       });
   });
+  describe("/api/articles ?TOPIC_QUERY", () => {
+    test("GET: 200 sends an article object to the client, relevant to a valid query", () => {
+      return request(app)
+        .get("/api/articles?topic=cats")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(1);
+          expect(body.articles[0].topic).toBe("cats");
+        });
+    });
 
-  test("GET: 200 sends an article relevant to a query", () => {
-    return request(app)
-      .get("/api/articles?topic=cats")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.articles.length).toBe(1);
-        expect(body.articles[0].topic).toBe("cats");
-      });
-  });
+    test("GET: 200 sends a message to the client informing no articles yet written for existing topic.", () => {
+      return request(app)
+        .get("/api/articles?topic=paper")
+        .expect(200)
+        .then(({ text }) => {
+          expect(text).toBe(
+            "Oops, no one has written anything on this topic yet."
+          );
+        });
+    });
 
-  test("GET: 404 returns a status and error if query finds no results.", () => {
-    return request(app)
-      .get("/api/articles?topic=paper")
-      .expect(404)
-      .then(({ text }) => {
-        expect(text).toBe("Topic not found.");
-      });
+    test("GET: 404 returns a status and error if query finds no results.", () => {
+      return request(app)
+        .get("/api/articles?topic=snakes")
+        .expect(404)
+        .then(({ text }) => {
+          expect(text).toBe("Unfortunately, we couldn't find this topic.");
+        });
+    });
+
   });
 });
 
