@@ -138,14 +138,12 @@ describe("/api/articles", () => {
         });
     });
 
-    test("GET: 200 sends a message to the client informing no articles yet written for existing topic.", () => {
+    test("GET: 200 returns an empty array to client, indicating no articles yet written for existing topic.", () => {
       return request(app)
         .get("/api/articles?topic=paper")
         .expect(200)
-        .then(({ text }) => {
-          expect(text).toBe(
-            "Oops, no one has written anything on this topic yet."
-          );
+        .then(({ body }) => {
+          expect(body.articles).toEqual([]);
         });
     });
 
@@ -154,7 +152,7 @@ describe("/api/articles", () => {
         .get("/api/articles?topic=snakes")
         .expect(404)
         .then(({ text }) => {
-          expect(text).toBe("Unfortunately, we couldn't find this topic.");
+          expect(text).toBe("Topic doesn't exist in database.");
         });
     });
 

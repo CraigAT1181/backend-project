@@ -4,12 +4,10 @@ exports.checkTopic = async (topic) => {
   return db
     .query(`SELECT * FROM topics WHERE slug = $1`, [topic])
     .then((result) => {
-      
       if (result.rows.length === 0) {
-        
         return Promise.reject({
           status: 404,
-          message: "Unfortunately, we couldn't find this topic.",
+          message: "Topic doesn't exist in database.",
         });
       } else {
         return true;
@@ -18,13 +16,11 @@ exports.checkTopic = async (topic) => {
 };
 
 exports.fetchArticles = (query) => {
-
   let queryStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at,
     articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count
     FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id `;
 
   if (Object.keys(query)[0] !== undefined) {
-    
     queryStr += `WHERE topic = $1 `;
   }
 
@@ -32,22 +28,11 @@ exports.fetchArticles = (query) => {
 
   if (Object.keys(query)[0] !== undefined) {
     return db.query(queryStr, [query.topic]).then((result) => {
-      
       const articles = result.rows;
 
-      if (articles.length === 0) {
-        return Promise.reject({
-          status: 200,
-          message: "Oops, no one has written anything on this topic yet.",
-        });
-      } else {
-        return articles;
-      }
+      return articles;
     });
-  } 
-  
-  else if (Object.keys(query)[0] === undefined) {
-    
+  } else if (Object.keys(query)[0] === undefined) {
     return db.query(queryStr).then((result) => {
       const articles = result.rows;
 
