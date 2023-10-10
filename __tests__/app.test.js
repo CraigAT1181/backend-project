@@ -402,7 +402,7 @@ describe("/api/comments/:comment_id", () => {
       .delete("/api/comments/not-an-id")
       .expect(400)
       .then(({ body }) => {
-        expect(body.message).toBe("Please check your query and try again.");
+        expect(body.message).toBe("Invalid comment_id.");
       });
   });
 });
