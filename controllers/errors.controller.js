@@ -1,6 +1,6 @@
 exports.handlePSQLErrors = (err, req, res, next) => {
   if (err.code === "22P02") {
-    res.status(400).send({ message: "Invalid comment_id." });
+    res.status(400).send({ message: "Invalid query data-type." });
   }
 
   if (err.code === "23503") {

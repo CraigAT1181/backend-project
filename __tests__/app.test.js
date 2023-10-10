@@ -219,7 +219,7 @@ describe("/api/articles/:article_id", () => {
         .expect(400)
         .then((response) => {
           expect(response.body.message).toBe(
-            "Please check your query and try again."
+            "Invalid query data-type."
           );
         });
     });
@@ -379,7 +379,7 @@ describe("/api/articles/:article_id/comments", () => {
       .expect(400)
       .then((response) => {
         expect(response.body.message).toBe(
-          "Please check your query and try again."
+          "Invalid query data-type."
         );
       });
   });
@@ -402,7 +402,7 @@ describe("/api/comments/:comment_id", () => {
       .delete("/api/comments/not-an-id")
       .expect(400)
       .then(({ body }) => {
-        expect(body.message).toBe("Invalid comment_id.");
+        expect(body.message).toBe("Invalid query data-type.");
       });
   });
 });
