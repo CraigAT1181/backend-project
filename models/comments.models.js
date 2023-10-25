@@ -1,32 +1,31 @@
 const db = require("../db/connection.js");
 
 exports.fetchCommentsByArticleId = (article_id) => {
-  return db
-    .query(
-      `
-      SELECT * FROM comments
-      WHERE article_id = $1
-      ORDER BY created_at DESC;`,
-      [article_id]
-    )
+  const commentsQuery = db.query(`SELECT * FROM comments
+    WHERE article_id = $1
+    ORDER BY created_at DESC;`, [article_id])
+    
+  const articleQuery = db.query(`
+    SELECT *
+    FROM articles 
+    WHERE article_id = $1;
+    `, [article_id])
+  
 
-    .then((result) => {
-      const comments = result.rows;
+  return Promise.all([commentsQuery, articleQuery]).then(([comments, article]) => {
 
-      if (comments.length > 0) {
-        return comments;
-      } 
-      else {
-/* Add in here, some logic that tests whether the array is 0 because the article
-doesn't exist, or because the article simply has no comments.*/
+    if ((comments.rows.length === 0 && article.rows.length !== 0) || comments.rows.length > 0) {
+      
+      return comments.rows;
+    } 
+    else {
+      return Promise.reject({
+        status: 404,
+        message: "Not found.",
+      });
+  }})
 
-        return Promise.reject({
-          status: 404,
-          message: "Article does not exist.",
-        });
-      }
-    });
-};
+}
 
 exports.insertComment = (article_id, username, body) => {
   return db

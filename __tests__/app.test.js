@@ -263,8 +263,8 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
-describe("/api/articles/:article_id/comments", () => {
-  test("GET: 200 sends array of all comments by article_id.", () => {
+describe.only("/api/articles/:article_id/comments", () => {
+  test.only("GET: 200 sends array of all comments by article_id.", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
