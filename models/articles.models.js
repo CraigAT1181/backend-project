@@ -48,7 +48,7 @@ exports.fetchArticleById = (article_id) => {
       SELECT articles.*, COUNT(comments.comment_id)::INT AS comment_count
       FROM articles 
       LEFT JOIN comments ON articles.article_id = comments.article_id
-      WHERE comments.article_id = $1
+      WHERE articles.article_id = $1
       GROUP BY articles.article_id
       `,
       [article_id]

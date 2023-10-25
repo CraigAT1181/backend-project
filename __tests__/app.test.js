@@ -263,8 +263,8 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
-describe.only("/api/articles/:article_id/comments", () => {
-  test.only("GET: 200 sends array of all comments by article_id.", () => {
+describe("/api/articles/:article_id/comments", () => {
+  test("GET: 200 sends array of all comments by article_id.", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
@@ -369,7 +369,7 @@ describe.only("/api/articles/:article_id/comments", () => {
       .get("/api/articles/100/comments")
       .expect(404)
       .then((response) => {
-        expect(response.text).toBe("Article does not exist.");
+        expect(response.text).toBe("Not found.");
       });
   });
 
