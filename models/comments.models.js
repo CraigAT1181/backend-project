@@ -13,14 +13,9 @@ exports.fetchCommentsByArticleId = (article_id) => {
     .then((result) => {
       const comments = result.rows;
 
-      if (comments.length > 0) {
+  
         return comments;
-      } else {
-        return Promise.reject({
-          status: 404,
-          message: "Article does not exist.",
-        });
-      }
+    
     });
 };
 

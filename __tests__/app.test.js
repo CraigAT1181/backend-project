@@ -364,15 +364,6 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 
-  test("GET 404 Article Not Found", () => {
-    return request(app)
-      .get("/api/articles/100/comments")
-      .expect(404)
-      .then((response) => {
-        expect(response.text).toBe("Article does not exist.");
-      });
-  });
-
   test("GET 400 Bad Request", () => {
     return request(app)
       .get("/api/articles/not-a-number/comments")
