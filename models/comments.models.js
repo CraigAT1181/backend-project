@@ -13,9 +13,18 @@ exports.fetchCommentsByArticleId = (article_id) => {
     .then((result) => {
       const comments = result.rows;
 
-  
+      if (comments.length > 0) {
         return comments;
-    
+      } 
+      else {
+/* Add in here, some logic that tests whether the array is 0 because the article
+doesn't exist, or because the article simply has no comments.*/
+
+        return Promise.reject({
+          status: 404,
+          message: "Article does not exist.",
+        });
+      }
     });
 };
 
